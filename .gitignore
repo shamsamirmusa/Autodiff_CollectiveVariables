@@ -10,4 +10,4 @@ progress_notes/psudo_code1.pdf
 *.npz
 *.lock
 __pycache__/
-
+MD_env/
