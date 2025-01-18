@@ -1,5 +1,5 @@
 
 LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib
 rc: PYCVINTERFACE ATOMS=1,2,3 IMPORT=curvature CALCULATE=cv
-
 PRINT ARG=rc FILE=rc_colvar.out STRIDE=1
+
