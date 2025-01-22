@@ -1,24 +1,4 @@
 # Load the PythonCVInterface shared library
-#LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib
-
-# Define the collective variable using the Python function
-#cc: PYCVINTERFACE ATOMS=1,2,3 IMPORT=cc_colvar CALCULATE=cv
-
-# Output the center of curvature to a file
-#PRINT ARG=cc FILE=cc_colvar.out STRIDE=1
-
-# Load the PythonCVInterface shared library
-#LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib
-
-# Define the collective variables for x, y, and z coordinates of the center
-#cc_x: PYCVINTERFACE ATOMS=1,2,3 IMPORT=cc_colvar CALCULATE=cv COMPONENT_INDEX=0
-#cc_y: PYCVINTERFACE ATOMS=1,2,3 IMPORT=cc_colvar CALCULATE=cv COMPONENT_INDEX=1
-#cc_z: PYCVINTERFACE ATOMS=1,2,3 IMPORT=cc_colvar CALCULATE=cv COMPONENT_INDEX=2
-
-# Output the center of curvature coordinates to a file
-#PRINT ARG=cc_x,cc_y,cc_z FILE=cc_colvar.out STRIDE=1
-
-# Load the PythonCVInterface shared library
 LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib
 
 # Define the collective variables for x, y, and z coordinates of the center
