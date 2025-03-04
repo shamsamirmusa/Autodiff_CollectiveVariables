@@ -3,7 +3,7 @@ import jax.numpy as jnp
 from jax import grad, jit
 import plumedCommunications as PLMD
 
-plumedInit = {"Value": PLMD.defaults.COMPONENT}
+plumedInit = {"Value": PLMD.defaults.COMPONENT} # ask toreturn a vector
 
 @jit
 def center_of_curvature(x):
@@ -34,7 +34,7 @@ def center_of_curvature(x):
 # Separate functions for each component
 def center_x(action: PLMD.PythonCVInterface):
     positions = action.getPositions()
-    zero_box_derivative = jnp.zeros((3, 3))  # Placeholder
+    zero_box_derivative = jnp.zeros((3, 3))  # Placeholder  
     x_value = center_of_curvature(positions)[0]
     grad_x = grad(lambda x: center_of_curvature(x)[0])(positions)
     return x_value, grad_x, zero_box_derivative

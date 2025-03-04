@@ -16,21 +16,22 @@ def r_f(x):
     R2 = jnp.dot(r31, r31) / sin2theta / 4
     return jnp.sqrt(R2)
 
-def r_g(x):
-    grad_rc = grad(r_f)
-    return grad_rc(x)
+r_g = jit(grad(r_f))
+# def r_g(x):
+    
+#     return grad_rc(x)
 
 
  
+zero_box_derivative = jnp.zeros((3, 3)) # place holder
 
 def cv(action:PLMD.PythonCVInterface):
     """
     This script defines a collective variable using the PYCVINTERFACE plugin.
     The CV represents the radius ofcurvature and it's derivatives wrt atomic positions.
     """
-
-    zero_box_derivative = jnp.zeros((3, 3)) # place holder
-    return r_f(action.getPositions()), r_g(action.getPositions()), zero_box_derivative
+    x=action.getPositions()
+    return r_f(x), r_g(x), zero_box_derivative
 
 
 
