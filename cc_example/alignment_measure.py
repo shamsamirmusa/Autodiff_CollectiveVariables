@@ -1,4 +1,5 @@
 import jax.numpy as jnp
+import jax
 from jax import grad, jit
 import plumedCommunications as PLMD
 
@@ -7,7 +8,7 @@ plumedInit = {
     "COMPONENTS": {
         "Alighnemt": {"period": None, "derivative": True},}}
 
-@jit
+# @jit
 def B_circumcenter(A, B, C):
    #link 
     a =jnp.linalg.norm(B - C)
@@ -22,7 +23,7 @@ def B_circumcenter(A, B, C):
     center_point = (alpha*A + beta*B + gamma*C )/ denomenator
     return center_point
 
-@jit
+# @jit
 def circumcenter_matrix(positions):
    
     centers = jnp.zeros((len(positions)-2, 3))
@@ -35,14 +36,13 @@ def circumcenter_matrix(positions):
         
     return  centers
 
-@jit
 def fit_line_to_circumcenters(allcenter):
     N = allcenter.shape[0]
     idxs = jnp.arange(N)
 
     def fitting_func(allcenter):
         A = jnp.vstack([idxs, jnp.ones(N)]).T
-        m, c = jnp.linalg.lstsq(A,allcenter)[0] 
+        m, c = jnp.linalg.lstsq(A,allcenter)[0]  #why -1 instead of none with jax
         return m, c
     
     m_x, c_x = fitting_func(allcenter[:,0]) 
@@ -57,13 +57,13 @@ def fit_line_to_circumcenters(allcenter):
     residuals_y = allcenter[:,1] - fitted_y
     residuals_z = allcenter[:,2] - fitted_z
 
- 
-    # m = jnp.array([m_x, m_y, m_z])
-    # c = jnp.array([c_x, c_y,c_z])
+
+    m = jnp.array([m_x, m_y, m_z])
+    c = jnp.array([c_x, c_y,c_z])
     residuals = jnp.array([residuals_x, residuals_y, residuals_z])
     # fitted_xyz = jnp.array([fitted_x, fitted_y, fitted_z])
-    sum_residulas = jnp.sum(residuals**2)
-    return sum_residulas
+    sum_res = jnp.sum(residuals**2)
+    return sum_res
 
 
 def resid_fn(x):
@@ -73,14 +73,15 @@ def resid_fn(x):
         # print(residuals)
         return sum_res
 
-resid_grad_fn  = grad(resid_fn)
 
+resid_grad_fn  = grad(resid_fn)
 
 def alignment(action: PLMD.PythonCVInterface):
     x= action.getPositions()
+    
     resid = resid_fn(x)
     resid_grad  = resid_grad_fn(x)
     resid_grad_box = jnp.zeros((3,3))
-    
+
     return resid , resid_grad, resid_grad_box
-    
+
