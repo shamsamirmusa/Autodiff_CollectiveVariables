@@ -1,5 +1,5 @@
 ### Helix Length Calculation
-The project integrates jax with PLUMED through PythonCVInterface to calculate the Barycentric coordinates from which the distance between the first and last center is computed giving the length of a helix central axis. 
+The project integrates jax with PLUMED through PythonCVInterface to calculate the Barycentric coordinates [1] from which the distance between the first and last center is computed giving the length of a helix central axis. 
 #### Requirements
 - Jax numpy
 - JAX jit
@@ -32,3 +32,8 @@ plumed driver --plumed helix_length.dat --pdb 1kdx.pdb --mf_dcd 1kdx.dcd
 
 #### Output
 helix_length.out.reference containing the calculated distances for each frame.
+
+-----------------------------------------------------
+[1]
+    https://math.stackexchange.com/questions/1304194/center-of-circle-when-three-points-in-3-space-are-given/1304202#1304202
+
