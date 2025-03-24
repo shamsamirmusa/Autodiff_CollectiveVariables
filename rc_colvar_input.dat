@@ -1,0 +1,9 @@
+
+
+LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.so
+
+rc: PYTHONCV IMPORT=curvature ATOMS = 1,4,3 Import =curvature Function = r
+    PRINT ARG=rc FILE=/Users/sss/Documents/EnergyGap_project/rc_colvar.out
+    RESTRAINT ARG=rc AT=0 KAPPA=0 SLOPE=1
+
+

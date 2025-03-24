@@ -6,6 +6,15 @@ literature/contact_map.pdf
 progress_notes/Identifying_crucial_moments_and_hotspots-2.pdf
 progress_notes/Progress_notes1.pdf
 progress_notes/psudo_code1.pdf
+literature/
+knoted_proteins/
+messy_cc_example/
+*.mdp
+plumed2/
+pycvenv/
+other_eng_stuff/
+pyhelp.py
+
 
 *.npz
 *.lock

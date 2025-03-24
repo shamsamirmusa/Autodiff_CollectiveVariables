@@ -120,7 +120,7 @@ def extract_lj_parameters(path):
 
 
 
-def compute_interaction_energy_matrix(distance_matrix, residues, lj_params):   #, dielectric=78.5
+def compute_interaction_energy_matrix(distance_matrix, residues, lj_params, dielectric=78.5):
     """
     Compute interaction energy matrix with Lennard-Jones and Coulombic interactions,
     adjusted for water as the dielectric medium and units in kJ/mol.
@@ -143,8 +143,8 @@ def compute_interaction_energy_matrix(distance_matrix, residues, lj_params):   #
     """
     n_residues = len(residues)
     energy_matrix = np.zeros((n_residues, n_residues))
-    # conversion_factor = 1 / (4 * np.pi * sc.epsilon_0 * dielectric) * sc.elementary_charge**2 / sc.Avogadro / 1000  # kJ/mol
-    conversion_factor = 138.935485  # 1 / (4 * np.pi * sc.epsilon_0 * dielectric) # kJ/mol
+    conversion_factor = 1 / (4 * np.pi * sc.epsilon_0 * dielectric) * sc.elementary_charge**2 / sc.Avogadro / 1000  # kJ/mol
+
     for i in range(n_residues):
         for j in range(i + 1, n_residues):
             E_vdw = 0.0
