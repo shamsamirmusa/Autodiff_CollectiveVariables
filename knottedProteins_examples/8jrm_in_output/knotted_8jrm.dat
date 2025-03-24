@@ -1,0 +1,16 @@
+LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib 
+ca_atoms: GROUP ATOMS=1,18,39,53,74,96,111,127,149,166,183,190,211,218,240,247,268,287,297,314,334,356,370,392,414,430,454,474,496,512,528,542,553,573,587,599,618,640,656,673,693,709,723,734,754,768,780,801,823,839,861,880,891,905,916,927,938,958,969,984,999,1013,1032,1054,1073,1090,1106,1122,1136,1147,1167,1181,1193,1209,1231,1250,1267,1289,1305,1319,1330,1350,1357,1369,1389,1404,1414,1435,1454
+
+#define the labels knot and knot_N.
+knot: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv 
+knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES
+
+#What actions to be performed on which label and output it where
+DUMPDERIVATIVES ARG=knot FILE=knotted_8jrm_der.out.reference
+DUMPDERIVATIVES ARG=knot_N FILE=knotted_8jrm_derN.out.reference
+
+#PRINT prints a a single scalar value per frame
+PRINT ARG=* FILE=knotted_cv_8jrm.out.reference 
+
+
+
