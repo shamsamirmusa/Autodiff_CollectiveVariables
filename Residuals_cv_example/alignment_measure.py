@@ -84,4 +84,7 @@ def alignment(action: PLMD.PythonCVInterface):
     
     return resid , resid_grad, resid_grad_box
     
+<<<<<<< HEAD
 
+=======
+>>>>>>> 23c9cb161b9f7c6133c2f301ef320b083e1483b2
