@@ -1,7 +1,0 @@
-
-
-LOAD FILE=/path/to/plumed2/plugins/pycv/PythonCVInterface.so
-rc: PYCVINTERFACE ATOMS=1,2,3 IMPORT=curvature CALCULATE=plumedCalculate
-lr: RESTRAINT ARG=d KAPPA=0 AT=0 SLOPE=2.5
-PRINT ARG=rc FILE=rc_colvar.out STRIDE=1
-
