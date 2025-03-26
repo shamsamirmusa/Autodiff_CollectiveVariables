@@ -1,6 +1,18 @@
-This is a test that inspects the functionality of the INIT keyward.  
+# Custom Collective Variable Implementation
 
-The expected output bby the function is confirmed by hand to be:  
+## Overview
+
+This document examines 
+1. The functionality of the Interface. 
+2.`INIT` keyword in a computational setup using PLUMED. 
+3. Jax autodeff.
+
+
+The Python module takes the \(x\), \(y\), \(z\) components of the first position and calculates \(cv = 2x^2 + 2y^2 + 2z^2\).
+
+### Expected Output  
+
+The expected output bby the function is confirmed by manual calculation, is as follows: 
 
 | Quantity (nm)  | Value |
 | -------------  | ------------- |
@@ -9,16 +21,18 @@ The expected output bby the function is confirmed by hand to be:
 | dcv/dy  | 6.36 |
 | dcv/dz  | 6.90 |
 
+## Initialization
+
 In Plumed, *plumedInit* dictionary defines the properties of the custom CV particularly the periodicity and whether their derivative should be computed. 
 
-- example use 1:
+- Example use 1: No periodicity.
 
 plumedInit = {
     "COMPONENTS": {
         # "Distance": {"period": None , "derivative": True},}}
 
-By specifying the period None, plumed will not wrap the cv values into any interval, meaning they can grow without being constraint by a simulation box size.  
-And infact, when the above plumedInit i applied, the result matches the calculation by hand to few significant figures.  
+By specifying `period: None`, PLUMED will not wrap the CV values into any interval, allowing them to grow without being constrained by a simulation box size.   
+And infact, when the above plumedInit is applied, the result matches the calculation by hand to few significant figures.  
 
 | Quantity (nm)  | Value |
 | -------------  | ------------- |
@@ -27,7 +41,7 @@ And infact, when the above plumedInit i applied, the result matches the calculat
 | dcv/dy  | 6.3615999222 |
 | dcv/dz  | 6.9019994736 |
 
-- examole us 2:
+- Example us 2: With Box Size Consideration
 
 -----------------------------------------------------------
 
@@ -47,10 +61,11 @@ Here, the box lemgth is the x axis *"0"* set to be 1.3. This means that the cv v
 | dcv/dz  | 6.9019994736 |
 
 Under the hood, th cv  value is computed as follows:  
-43.21 A -> 4.321 nm
+43.21 A -> 4.321 nm  
+
 4.321 % 1.3 = 0.32384  
 -------------------------------------------------------------
-example use 3:
+- Example use 3: Overriding Periodicity in PLUMED Input
 
 Removing periodicity could also be done in the plumed input file but it sees to be overriden by what is set in the plumedInit object.  
 For example, if we kept the plumedInit in the python module as follows  
@@ -66,6 +81,21 @@ cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NOPBC
 The cv output would still be restrained between 0 and 1.3
 
 -------------------------------------------------
+- example use 4:  Comparing Jax Auto-Diff to PLUMED Numerical Derivatives
+
+To inspect jax auto diff functionality we can compare it to plumed NUMERICAL_DERIVATIVES by creating a new label named cv_N for example.  
+
+cv_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NUMERICAL_DERIVATIVES  
+DUMPDERIVATIVES ARG=cv_N STRIDE=1 FILE=simple_NUM.out
+ 
+
+| jax autodiff  |  Numerical derivative|
+| -------------  | ------------- |
+|  -16.0499992371  | -16.0499997139|
+| 6.3615999222  | 6.3615999222|
+| 6.9019994736  | 6.9019999504 |
+
+
 - Plumed Driver command
 
 The plumed Driver command is 

@@ -5,9 +5,14 @@ ca_atoms: GROUP ATOMS=2,9,14,22,31,40,45,56,64,71,77,86,94,102,111,116,121,135,1
 DUMPATOMS FILE=dump-before.xyz ATOMS=ca_atoms
 
 cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn
+DUMPDERIVATIVES ARG=cv STRIDE=1 FILE=simple_autodiff.out
+
+cv_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NUMERICAL_DERIVATIVES
+DUMPDERIVATIVES ARG=cv_N STRIDE=1 FILE=simple_NUM.out
 
 DUMPATOMS FILE=dump-after.xyz ATOMS=ca_atoms
+DUMPDERIVATIVES ARG=cv STRIDE=1 FILE=simple_autodiff.out
 
-DUMPDERIVATIVES ARG=cv STRIDE=1 FILE=simple_der.out
+
 PRINT ARG=* FILE=simple_cv.out STRIDE=1
 
