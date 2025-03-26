@@ -11,7 +11,7 @@ d_plumed: DISTANCE ATOMS=1,2 NUMERICAL_DERIVATIVES
 
 DUMPATOMS FILE=dump-3.xyz ATOMS=ca_atoms
 
-RESTRAINT ARG=d_plumed AT=0 SLOPE=-1
+#RESTRAINT ARG=d_plumed AT=0 SLOPE=-1
 
 DUMPDERIVATIVES ARG=d_cv FILE=distance_der.out 
 DUMPDERIVATIVES ARG=d_plumed FILE=plumed_distance_der.out 

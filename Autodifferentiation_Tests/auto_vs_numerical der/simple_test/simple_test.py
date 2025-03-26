@@ -5,7 +5,8 @@ import plumedCommunications as PLMD
 
 plumedInit = {
     "COMPONENTS": {
-        "Distance": {"period": None, "derivative": True},}}
+        "Distance": {"period":None , "derivative": True},}}
+        # "Distance": {"period":["0", 1.3] , "derivative": True},}}
 
 
 def helper_fn(positions):

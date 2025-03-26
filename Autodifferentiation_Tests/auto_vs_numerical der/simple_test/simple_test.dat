@@ -2,14 +2,12 @@ LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVIn
 
 ca_atoms: GROUP ATOMS=2,9,14,22,31,40,45,56,64,71,77,86,94,102,111,116,121,135,143,152,163,172,180,189,197,202,207,212,221
 
-DUMPATOMS FILE=dump-now.xyz ATOMS=ca_atoms
-pos: POSITION ATOMS=ca_atoms NOPBC
 DUMPATOMS FILE=dump-before.xyz ATOMS=ca_atoms
 
-my_val: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn
+cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn
 
 DUMPATOMS FILE=dump-after.xyz ATOMS=ca_atoms
 
-DUMPDERIVATIVES ARG=my_val STRIDE=1 FILE=simple_der.out
+DUMPDERIVATIVES ARG=cv STRIDE=1 FILE=simple_der.out
 PRINT ARG=* FILE=simple_cv.out STRIDE=1
 
