@@ -6,7 +6,7 @@ import plumedCommunications as PLMD
 # plumedInit = {"Value": PLMD.defaults.COMPONENT} # ask toreturn a vector
 plumedInit = {
     "COMPONENTS": {
-        "length": {"period": None, "derivative": False},}}
+        "length": {"period": None, "derivative": True},}}
 
 
 
@@ -69,17 +69,28 @@ def circumcenter_matrix(positions):
         # jax.debug.print("{cc}", cc=cc)   
         centers = centers.at[i, :].set(cc)
         
-
     return  centers
 
+
+def helper_distance(allcenters):
+    dist = jnp.linalg.norm(allcenters[0, :] - allcenters[-1, :])
+    return dist
+
+def distance_from_positions(positions):
+    cm = circumcenter_matrix(positions)
+    return helper_distance(cm)
+
+gradient = jit(jax.grad(distance_from_positions))
+dummy_box = jnp.zeros((3,3))
 
 def distance(action: PLMD.PythonCVInterface):
     x= action.getPositions()
     cm = circumcenter_matrix(x)
-    dist = jnp.linalg.norm(cm[0, :] - cm[-1, :])
+    dist = helper_distance(cm)
+    grad_d = gradient(x)
     print(dist)
     
-    return dist
+    return dist, grad_d,dummy_box
 
 
     
