@@ -62,8 +62,8 @@ Here, the box lemgth is the x axis *"0"* set to be 1.3. This means that the cv v
 
 Under the hood, th cv  value is computed as follows:  
 43.21 A -> 4.321 nm  
-
-4.321 % 1.3 = 0.32384  
+4.321 % 1.3 = 0.32384
+  
 -------------------------------------------------------------
 - Example use 3: Overriding Periodicity in PLUMED Input
 

@@ -2,18 +2,12 @@ LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVIn
 
 ca_atoms: GROUP ATOMS=2,9,14,22,31,40,45,56,64,71,77,86,94,102,111,116,121,135,143,152,163,172,180,189,197,202,207,212,221
 
-DUMPATOMS FILE=dump-1.xyz ATOMS=ca_atoms
-pos: POSITION ATOMS=ca_atoms NOPBC
-DUMPATOMS FILE=dump-2.xyz ATOMS=ca_atoms
 
-my_val: PYCVINTERFACE ATOMS=ca_atoms IMPORT=distance1_test CALCULATE=distance_fn
-my_val_N: DISTANCE ATOMS=1,2 NUMERICAL_DERIVATIVES
+d: PYCVINTERFACE ATOMS=ca_atoms IMPORT=distance1_test CALCULATE=distance_fn
+d_N: DISTANCE ATOMS=2,9 NUMERICAL_DERIVATIVES
 
 
-DUMPATOMS FILE=dump-3.xyz ATOMS=ca_atoms
+DUMPDERIVATIVES ARG=d STRIDE=1 FILE=dist1_der.out
+DUMPDERIVATIVES ARG=d_N STRIDE=1 FILE=dist1_derN.out
 
-DUMPDERIVATIVES ARG=my_val STRIDE=1 FILE=dist1_der.out
-DUMPDERIVATIVES ARG=my_val_N STRIDE=1 FILE=dist_derN.out
-
-PRINT ARG=my_val,my_val_N FILE=dist1_cv.out STRIDE=1
-
+PRINT ARG=d,d_N FILE=dist1_cv.out STRIDE=1
