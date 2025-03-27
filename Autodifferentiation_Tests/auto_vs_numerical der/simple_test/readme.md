@@ -8,7 +8,7 @@ This document examines
 3. Jax autodeff.
 
 
-The Python module takes the \(x\), \(y\), \(z\) components of the first position and calculates \(cv = 2x^2 + 2y^2 + 2z^2\).
+The Python module takes the $x$, $y$, $z$ components of the first position and calculates $cv$ = $2x^{2} + 2y^{2} + 2z^{2}$.
 
 ### Expected Output  
 
@@ -24,8 +24,9 @@ The expected output bby the function is confirmed by manual calculation, is as f
 ## Initialization
 
 In Plumed, *plumedInit* dictionary defines the properties of the custom CV particularly the periodicity and whether their derivative should be computed. 
-
-- Example use 1: No periodicity.
+----------------------------------------------------------
+#### Example use 1: 
+##### No periodicity.
 
 plumedInit = {
     "COMPONENTS": {
@@ -40,16 +41,15 @@ And infact, when the above plumedInit is applied, the result matches the calcula
 | dcv/dx  | -16.0499992371|
 | dcv/dy  | 6.3615999222 |
 | dcv/dz  | 6.9019994736 |
-
-- Example us 2: With Box Size Consideration
-
------------------------------------------------------------
+-------------------------------------------------------
+#### Example us 2: 
+##### With Box Size Consideration
 
 Assuning box sixe consideration is required, then *period* value is a list where the first entery is the either the x, y or z dimention of the box, and the second entery is the value you want it to take.
 
-plumedInit = {
-    "COMPONENTS": {
-        # "Distance": {"period": ["0", 1.3] , "derivative": True},}}
+`plumedInit = {`
+    `"COMPONENTS": {`
+        `# "Distance": {"period": ["0", 1.3] ,` `"derivative": True},}}`
 
 Here, the box lemgth is the x axis *"0"* set to be 1.3. This means that the cv values is bound betweeen 0 and 1.3
 
@@ -61,27 +61,29 @@ Here, the box lemgth is the x axis *"0"* set to be 1.3. This means that the cv v
 | dcv/dz  | 6.9019994736 |
 
 Under the hood, th cv  value is computed as follows:  
-43.21 A -> 4.321 nm  
-4.321 % 1.3 = 0.32384
+`43.21 A -> 4.321 nm`  
+`4.321 % 1.3 = 0.32384`
   
 -------------------------------------------------------------
-- Example use 3: Overriding Periodicity in PLUMED Input
+#### Example use 3: 
+##### Overriding Periodicity in PLUMED Input
 
 Removing periodicity could also be done in the plumed input file but it sees to be overriden by what is set in the plumedInit object.  
 For example, if we kept the plumedInit in the python module as follows  
 
-plumedInit = {
-    "COMPONENTS": {
-        # "Distance": {"period": ["0", 1.3] , "derivative": True},}}  
+`plumedInit = {`
+    `"COMPONENTS": {`
+        `"Distance": {"period": ["0", 1.3] , "derivative": True},}}  `
 
 and *NOPBC* was included in th plumed input like this   
 
-cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NOPBC  
+`cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NOPBC`
 
 The cv output would still be restrained between 0 and 1.3
 
 -------------------------------------------------
-- example use 4:  Comparing Jax Auto-Diff to PLUMED Numerical Derivatives
+#### Example use 4:  
+##### Comparing Jax Auto-Diff to PLUMED Numerical Derivatives
 
 To inspect jax auto diff functionality we can compare it to plumed NUMERICAL_DERIVATIVES by creating a new label named cv_N for example.  
 
@@ -99,14 +101,14 @@ DUMPDERIVATIVES ARG=cv_N STRIDE=1 FILE=simple_NUM.out
 - Plumed Driver command
 
 The plumed Driver command is 
-plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  
+`plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd`  
 
 - Inspecting the atomic positions  
 
-DUMPATOMS FILE=dump-before/after.xyz ATOMS=ca_atoms  
+`DUMPATOMS FILE=dump-before/after.xyz ATOMS=ca_atoms`  
 
-- Note on units  
+-A Note on units  
 
 Plumed did the calculation in A but printed them as nm. 
 Try  
-plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  --Length = A
+`plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  --Length = A`
