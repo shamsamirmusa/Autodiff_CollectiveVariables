@@ -1,7 +1,9 @@
 import jax.numpy as jnp
 import jax
 from jax import jit
+jax.config.update("jax_enable_x64", True) 
 import plumedCommunications as PLMD
+
 
 # plumedInit = {"Value": PLMD.defaults.COMPONENT} # ask toreturn a vector
 plumedInit = {
@@ -61,17 +63,22 @@ def circumcenter_matrix(positions):
     centers : numpy array
         (N-2, 3) array of the circumcenters of all consecutive triplets of atoms
     """
-    centers = jnp.zeros((len(positions)-2, 3))
+@jit
+def circumcenter_matrix(positions):
+    N = positions.shape[0]
+    indices = jnp.arange(N - 2)
     
-    for i in range(len(positions) - 2):
-        A, B, C = positions[i, :], positions[i+1, :], positions[i+2, :]
-        cc = B_circumcenter(A, B, C)
-        # jax.debug.print("{cc}", cc=cc)   
-        centers = centers.at[i, :].set(cc)
-        
-    return  centers
+    def compute_cc(i):
+        A = positions[i]
+        B = positions[i + 1]
+        C = positions[i + 2]
+        return B_circumcenter(A, B, C)
+    
+    # Apply the compute_cc function to every index using vmap.
+    center = jax.vmap(compute_cc)(indices)
+    return center
 
-
+@jit
 def helper_distance(allcenters):
     dist = jnp.linalg.norm(allcenters[0, :] - allcenters[-1, :])
     return dist
@@ -81,15 +88,15 @@ def distance_from_positions(positions):
     return helper_distance(cm)
 
 gradient = jit(jax.grad(distance_from_positions))
-dummy_box = jnp.zeros((3,3))
+
 
 def distance(action: PLMD.PythonCVInterface):
+    
     x= action.getPositions()
     cm = circumcenter_matrix(x)
     dist = helper_distance(cm)
     grad_d = gradient(x)
-    print(dist)
-    
+    dummy_box = jnp.zeros((3,3))
     return dist, grad_d,dummy_box
 
 
