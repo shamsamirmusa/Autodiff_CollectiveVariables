@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import jax
 from jax import jit
-jax.config.update("jax_enable_x64", True) 
+# jax.config.update("jax_enable_x64", True) 
 import plumedCommunications as PLMD
 
 
@@ -93,8 +93,9 @@ gradient = jit(jax.grad(distance_from_positions))
 def distance(action: PLMD.PythonCVInterface):
     
     x= action.getPositions()
-    cm = circumcenter_matrix(x)
-    dist = helper_distance(cm)
+    # cm = circumcenter_matrix(x)
+    # dist = helper_distance(cm)
+    dist = distance_from_positions(x)
     grad_d = gradient(x)
     dummy_box = jnp.zeros((3,3))
     return dist, grad_d,dummy_box

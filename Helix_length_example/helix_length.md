@@ -32,3 +32,5 @@ plumed driver --plumed helix_length.dat --pdb 1kdx.pdb --mf_dcd 1kdx.dcd
 
 #### Output
 helix_length.out.reference containing the calculated distances for each frame.
+
+Note! DISTANCE action requires ATOMS to contain only two atoms. make sure they are the first two indices specified in your GROUP ATOMS

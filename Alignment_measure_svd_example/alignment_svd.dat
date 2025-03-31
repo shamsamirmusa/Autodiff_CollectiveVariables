@@ -12,8 +12,4 @@ ali_b2N: PYCVINTERFACE ATOMS=hb2 IMPORT=alignment_svd CALCULATE=alignment NUMERI
 DUMPDERIVATIVES ARG=ali_b1,ali_b1N STRIDE=1 FILE=alignment_b1_der_svd.out
 DUMPDERIVATIVES ARG=ali_b2,ali_b2N STRIDE=1 FILE=alignment_b2_der_svd.out
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 23c9cb161b9f7c6133c2f301ef320b083e1483b2
 PRINT FILE=alignment_cv_svd.out ARG=ali_b1,ali_b2 STRIDE=1

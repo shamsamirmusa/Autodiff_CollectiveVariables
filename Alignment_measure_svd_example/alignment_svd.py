@@ -1,7 +1,8 @@
 import jax.numpy as jnp
 from jax import grad, jit
 import plumedCommunications as PLMD
-
+import jax
+jax.config.update("jax_enable_x64", True) 
 
 plumedInit = {
     "COMPONENTS": {
@@ -24,16 +25,17 @@ def B_circumcenter(A, B, C):
 
 @jit
 def circumcenter_matrix(positions):
-   
-    centers = jnp.zeros((len(positions)-2, 3))
-    # distance_pace = jnp.zeros((len(positions)-2, 1))
-    for i in range(len(positions) - 2):
-        A, B, C = positions[i, :], positions[i+1, :], positions[i+2, :]
-        cc = B_circumcenter(A, B, C)
-        # jax.debug.print("{cc}", cc=cc)   
-        centers = centers.at[i, :].set(cc)
-        
-    return  centers
+    N = positions.shape[0]
+    indices = jnp.arange(N - 2)
+    
+    def compute_cc(i):
+        A = positions[i]
+        B = positions[i + 1]
+        C = positions[i + 2]
+        return B_circumcenter(A, B, C)
+    
+    center = jax.vmap(compute_cc)(indices)
+    return center
 
 
 def svd_fit(points):
@@ -41,24 +43,25 @@ def svd_fit(points):
     avg = jnp.mean(points, axis=0)  
     sigma = jnp.std(points, axis=0)
     subtracted = (points - avg)/sigma
-
     _, s, _ = jnp.linalg.svd(subtracted, full_matrices=False) 
-    
     s1 = s[0]
     s_sum = jnp.sum(s)
-
     return s1/s_sum
 
 grad_fit = grad(svd_fit)
 
 
-def alignment(action: PLMD.PythonCVInterface):
-    x= action.getPositions()
-    c_points = circumcenter_matrix(x)
-    straightness = svd_fit(c_points)
-    straightness_grad = grad_fit(x)
+def distance_from_positions(positions: jnp.ndarray):
+    cm = circumcenter_matrix(positions)
+    return svd_fit(cm)
 
-    dummy_grad_box = jnp.zeros((3,3))
+
+gradient = jit(grad(distance_from_positions))
+dummy_box = jnp.zeros((3,3))
+
+def alignment(action: PLMD.PythonCVInterface):
     
-    return straightness , straightness_grad, dummy_grad_box
-    
+    x = action.getPositions()  # Expected shape: (natoms, 3)
+    straightness = distance_from_positions(x)
+    grad_d = gradient(x)
+    return straightness, grad_d, dummy_box

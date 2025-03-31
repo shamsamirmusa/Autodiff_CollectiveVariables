@@ -1,6 +1,8 @@
 import jax.numpy as jnp
 from jax import grad, jit
 import plumedCommunications as PLMD
+import jax
+jax.config.update("jax_enable_x64", True) 
 
 @jit
 def compute_writhe_simplex(positions:float)->float:
