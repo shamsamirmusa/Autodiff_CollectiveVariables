@@ -4,6 +4,11 @@ import plumedCommunications as PLMD
 import jax
 jax.config.update("jax_enable_x64", True) 
 
+plumedInit = {
+"Value" : {"period":None, "derivative":True}
+
+}
+
 @jit
 def compute_writhe_simplex(positions:float)->float:
     """
@@ -21,7 +26,7 @@ def compute_writhe_simplex(positions:float)->float:
     tangents = jnp.diff(positions, axis=0)
     tangents /= jnp.linalg.norm(tangents, axis=1, keepdims=True)  # Normalize
 
-    # Generate all index pairs (i, j) with i > j (strictly upper triangular part)
+    # Generate all index pairs (i, j) with i > j (upper triangular part)
     i_idx, j_idx = jnp.triu_indices(N - 1, k=1)  # k=1 ensures i > j
 
     # Extract relevant points and tangents
@@ -56,10 +61,7 @@ writhe_grade = jit(grad(compute_writhe_simplex))
 
 zero_box_derivative = jnp.zeros((3, 3)) # place holder
 
-plumedInit = {
-"Value" : {"period":None, "derivative":True}
 
-}
 
 def cv(action:PLMD.PythonCVInterface):
     """

@@ -3,8 +3,8 @@ ca_atoms: GROUP ATOMS=1,8,13,21,30,39,44,55,63,70,76,85,93,101,110,115,120,134,1
 
 #define the labels knot and knot_N.
 knot: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv 
-knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES RESTRAINT
-RESTRAINT ARG=knot_N AT=0 SLOPE=-1
+knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES #RESTRAINT
+#RESTRAINT ARG=knot_N AT=0 SLOPE=-1
 #What actions to be performed on which label and output it where
 DUMPDERIVATIVES ARG=knot,knot_N FILE=knotted_4dvd_der.out.reference
 

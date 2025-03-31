@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import jax
 from jax import jit
-# jax.config.update("jax_enable_x64", True) 
+jax.config.update("jax_enable_x64", True) 
 import plumedCommunications as PLMD
 
 
@@ -78,14 +78,16 @@ def circumcenter_matrix(positions):
     center = jax.vmap(compute_cc)(indices)
     return center
 
+
+def distance_from_positions(positions):
+    cm = circumcenter_matrix(positions)
+    return helper_distance(cm)
+
 @jit
 def helper_distance(allcenters):
     dist = jnp.linalg.norm(allcenters[0, :] - allcenters[-1, :])
     return dist
 
-def distance_from_positions(positions):
-    cm = circumcenter_matrix(positions)
-    return helper_distance(cm)
 
 gradient = jit(jax.grad(distance_from_positions))
 
@@ -93,8 +95,6 @@ gradient = jit(jax.grad(distance_from_positions))
 def distance(action: PLMD.PythonCVInterface):
     
     x= action.getPositions()
-    # cm = circumcenter_matrix(x)
-    # dist = helper_distance(cm)
     dist = distance_from_positions(x)
     grad_d = gradient(x)
     dummy_box = jnp.zeros((3,3))
