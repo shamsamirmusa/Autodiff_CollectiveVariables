@@ -8,7 +8,7 @@ This document examines
 3. Jax autodeff.
 
 
-The Python module takes the \(x\), \(y\), \(z\) components of the first position and calculates \(cv = 2x^2 + 2y^2 + 2z^2\).
+The Python module takes the $x$, $y$, $z$ components of the first position and calculates $cv$ = $2x^{2} + 2y^{2} + 2z^{2}$.
 
 ### Expected Output  
 
@@ -77,7 +77,7 @@ For example, if we kept the plumedInit in the python module as follows
 
 and *NOPBC* was included in th plumed input like this   
 
-cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NOPBC  
+`cv: PYCVINTERFACE ATOMS=ca_atoms IMPORT=simple_test CALCULATE=scratch_fn NOPBC`
 
 The cv output would still be restrained between 0 and 1.3
 
@@ -101,14 +101,14 @@ DUMPDERIVATIVES ARG=cv_N STRIDE=1 FILE=simple_NUM.out
 - Plumed Driver command
 
 The plumed Driver command is 
-plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  
+`plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd`  
 
 - Inspecting the atomic positions  
 
-DUMPATOMS FILE=dump-before/after.xyz ATOMS=ca_atoms  
+`DUMPATOMS FILE=dump-before/after.xyz ATOMS=ca_atoms`  
 
-- Note on units  
+-A Note on units  
 
 Plumed did the calculation in A but printed them as nm. 
 Try  
-plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  --Length = A
+`plumed driver --plumed simple_test.dat --pdb 4dvd_plumed.pdb --mf_dcd 4dvd.dcd  --Length = A`
