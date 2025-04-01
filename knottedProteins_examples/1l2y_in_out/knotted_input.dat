@@ -1,5 +1,11 @@
 LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib 
-knot: PYCVINTERFACE ATOMS=1,2,3 IMPORT=knotted_colvar CALCULATE=cv INIT=plumedInit
+ca_atoms: GROUP ATOMS=1,17,36,57,76,93,117,136,158,170,177,184,198,209,220,227,251,265,279,293
+knot: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv INIT=plumedInit
+
+knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES
+#What actions to be performed on which label and output it where
+
+DUMPDERIVATIVES ARG=knot,knot_N FILE=cv_der.out.reference
 PRINT ARG=knot FILE=knotted_cv.out STRIDE=1
 
 

@@ -57,7 +57,7 @@ def compute_writhe_simplex(positions:float)->float:
     return writhe
 
 
-writhe_grade = jit(grad(compute_writhe_simplex)) 
+writhe_g = jit(grad(compute_writhe_simplex)) 
 
 zero_box_derivative = jnp.zeros((3, 3)) # place holder
 
@@ -70,5 +70,5 @@ def cv(action:PLMD.PythonCVInterface):
     """
     x=action.getPositions()
     writhe_value = compute_writhe_simplex(x)
-    writhe_grade = writhe_grade(x)
+    writhe_grade = writhe_g(x)
     return writhe_value, writhe_grade, zero_box_derivative

@@ -1,3 +1,0 @@
-LOAD FILE=/Users/sss/Documents/EnergyGap_project/plumed2/plugins/pycv/PythonCVInterface.dylib 
-knot: PYCVINTERFACE ATOMS=1,2,3 IMPORT=knotted_colvar CALCULATE=cv INIT=plumedInit
-PRINT ARG=knot FILE=knotted_cv.out STRIDE=1
