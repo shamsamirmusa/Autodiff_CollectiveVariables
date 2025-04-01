@@ -6,8 +6,8 @@ knot: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv
 knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES #RESTRAINT
 #RESTRAINT ARG=knot_N AT=0 SLOPE=-1
 #What actions to be performed on which label and output it where
-DUMPDERIVATIVES ARG=knot,knot_N FILE=knotted_4dvd_der.out.reference
+DUMPDERIVATIVES ARG=knot,knot_N FILE=cv_der.out
 
 
 #PRINT prints a a single scalar value per frame
-PRINT ARG=* FILE=knotted_4dvd.out.reference 
+PRINT ARG=* FILE=cv.out

@@ -10,7 +10,7 @@ plumedInit = {
 
 @jit
 def B_circumcenter(A, B, C):
-   #link 
+   #https://math.stackexchange.com/questions/1304194/center-of-circle-when-three-points-in-3-space-are-given/1304202#1304202
     a =jnp.linalg.norm(B - C)
     b =jnp.linalg.norm( C - A)
     c =jnp.linalg.norm( A - B)
@@ -61,7 +61,7 @@ dummy_box = jnp.zeros((3,3))
 
 def alignment(action: PLMD.PythonCVInterface):
     
-    x = action.getPositions()  # Expected shape: (natoms, 3)
+    x = action.getPositions()  
     straightness = distance_from_positions(x)
     grad_d = gradient(x)
     return straightness, grad_d, dummy_box

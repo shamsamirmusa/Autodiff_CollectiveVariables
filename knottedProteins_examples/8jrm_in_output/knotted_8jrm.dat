@@ -6,11 +6,11 @@ knot: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv
 knot_N: PYCVINTERFACE ATOMS=ca_atoms IMPORT=knotted_colvar CALCULATE=cv NUMERICAL_DERIVATIVES
 
 #What actions to be performed on which label and output it where
-DUMPDERIVATIVES ARG=knot FILE=knotted_8jrm_der.out.reference
-DUMPDERIVATIVES ARG=knot_N FILE=knotted_8jrm_derN.out.reference
+DUMPDERIVATIVES ARG=knot FILE=cv_der.out
+DUMPDERIVATIVES ARG=knot_N FILE=cv_derN.out
 
 #PRINT prints a a single scalar value per frame
-PRINT ARG=* FILE=knotted_cv_8jrm.out.reference 
+PRINT ARG=* FILE=cv.out
 
 
 

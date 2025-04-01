@@ -17,12 +17,6 @@ def r_f(x):
     return jnp.sqrt(R2)
 
 r_g = jit(grad(r_f))
-# def r_g(x):
-    
-#     return grad_rc(x)
-
-
- 
 zero_box_derivative = jnp.zeros((3, 3)) # place holder
 
 def cv(action:PLMD.PythonCVInterface):
