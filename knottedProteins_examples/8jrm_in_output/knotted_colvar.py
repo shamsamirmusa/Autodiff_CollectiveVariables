@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from jax import grad, jit
+from jax import grad, jit, vmap
 import plumedCommunications as PLMD
 import jax
 jax.config.update("jax_enable_x64", True) 
@@ -10,54 +10,34 @@ plumedInit = {
 }
 
 @jit
-def compute_writhe_simplex(positions:float)->float:
-    """
-    Compute the writhe of a protein backbone using the 2-simplex formulation.
-
-    Parameters:
-        positions: jnp.array of shape (N, 3), where N is the number of residues.
-        
-    Returns:
-        Writhe value (scalar)
-    """
+def compute_writhe(positions):
     N = positions.shape[0]
-
-    # Compute tangent vectors (finite difference approximation)
     tangents = jnp.diff(positions, axis=0)
-    tangents /= jnp.linalg.norm(tangents, axis=1, keepdims=True)  # Normalize
+    seg_len = jnp.linalg.norm(tangents, axis=1, keepdims=True)
+    tangents = tangents / seg_len
 
-    # Generate all index pairs (i, j) with i > j (upper triangular part)
-    i_idx, j_idx = jnp.triu_indices(N - 1, k=1)  # k=1 ensures i > j
+    def pairwise_writhe(i1, i2):
+        ri = positions[i1]
+        rj = positions[i2]
+        ti = tangents[i1]
+        tj = tangents[i2]
+        diff = ri - rj
+        cross_prod = jnp.cross(tj, diff)
+        scalar_triple = jnp.dot(ti, cross_prod)
+        dist_cubed = jnp.linalg.norm(diff) ** 3
+        return (scalar_triple / dist_cubed) * seg_len[i1] * seg_len[i2]
 
-    # Extract relevant points and tangents
-    r_i, r_j = positions[i_idx], positions[j_idx]
-    t_i, t_j = tangents[i_idx], tangents[j_idx]
+    # Create indices for all i1 < i2 combinations
+    i1_indices, i2_indices = jnp.triu_indices(N - 1, k=1)
 
-    # Compute pairwise displacement vectors
-    diff = r_i - r_j  # Shape: (M, 3)
+    # Vectorize pairwise_writhe over index arrays
+    vectorized_writhe = vmap(pairwise_writhe)      
+    writhe_sum = jnp.sum(vectorized_writhe(i1_indices, i2_indices))
 
-    # Compute cross product t_j x (r_i - r_j)
-    cross_prod = jnp.cross(t_j, diff)  # Shape: (M, 3)
-
-    # Compute scalar triple product: t_i ⋅ (t_j × (r_i - r_j))
-    scalar_triple_product = jnp.einsum("ij,ij->i", t_i, cross_prod)
-    # scalar_triple_product = jnp.dot(t_i, cross_prod)
-
-
-    distance_cubed = jnp.linalg.norm(diff, axis=1) ** 3
-    distance_cubed = jnp.where(distance_cubed == 0, jnp.inf, distance_cubed)  # Avoid division by zero
-
-    # Compute writhe sum witht he restriction.
-    writhe_sum = jnp.sum(scalar_triple_product / distance_cubed)
-
-    # Finall, with the normalization factor
-    writhe = (1 / (2 * jnp.pi)) * writhe_sum  # Factor adjusted for simplex
-   
-
+    writhe = (1.0 / (2.0 * jnp.pi)) * writhe_sum
     return writhe
 
-
-writhe_g = jit(grad(compute_writhe_simplex)) 
+writhe_g = jit(grad(compute_writhe)) 
 
 zero_box_derivative = jnp.zeros((3, 3)) # place holder
 
@@ -66,9 +46,9 @@ zero_box_derivative = jnp.zeros((3, 3)) # place holder
 def cv(action:PLMD.PythonCVInterface):
     """
     This script defines a collective variable using the PYCVINTERFACE plugin.
-    The CV represents the radius ofcurvature and it's derivatives wrt atomic positions.
+    The CV represents the space writhe of a curve.
     """
     x=action.getPositions()
-    writhe_value = compute_writhe_simplex(x)
+    writhe_value = compute_writhe(x)
     writhe_grade = writhe_g(x)
     return writhe_value, writhe_grade, zero_box_derivative
